@@ -13,7 +13,7 @@ module cond_unit(
 	input wire FlagsE;
 	input wire [3:0] ALUFlags;	
 	output wire [3:0] Flags;
-	output wire CondEx;
+	output wire CondExE;
 
 	wire [1:0] FlagWE;
 
@@ -32,11 +32,11 @@ module cond_unit(
 		.q(Flags[1:0])
 	);
 	condcheck cc(
-		.CondE(Cond),
-		.Flags(Flags),
-		.CondExE(CondEx)
+		.Cond(CondE),
+		.Flags(FlagsE),
+		.CondEx(CondExE)
 	);
-	assign FlagWE = FlagWriteE & {2 {CondEx}};
+	assign FlagWE = FlagWriteE & {2 {CondExE}};
 	
 
 endmodule
