@@ -8,9 +8,11 @@ module cond_unit(
 	Flags,
 	CondExE,
 );
+	input wire clk;
+	input wire reset;
 	input wire [1:0] FlagWriteE;
 	input wire [3:0] CondE;
-	input wire FlagsE;
+	input wire [3:0] FlagsE;
 	input wire [3:0] ALUFlags;	
 	output wire [3:0] Flags;
 	output wire CondExE;

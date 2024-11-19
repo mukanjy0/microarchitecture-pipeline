@@ -1,5 +1,6 @@
 module flop_de(
 	clk,
+	reset,
 	PCSrcD,
 	RegWriteD,
 	MemtoRegD,
@@ -21,6 +22,8 @@ module flop_de(
 	CondE,
 	FlagsE
 );
+	input wire clk;
+	input wire reset;
 	input wire PCSrcD;
 	input wire RegWriteD;
 	input wire MemtoRegD;

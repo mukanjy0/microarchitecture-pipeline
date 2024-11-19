@@ -1,5 +1,6 @@
 module flop_mw(
 	clk,
+	reset,
 	PCSrcM,
 	RegWriteM,
 	MemtoRegM,
@@ -7,6 +8,8 @@ module flop_mw(
 	RegWriteW,
 	MemtoRegW,
 );
+	input wire clk;
+	input wire reset;
 	input wire PCSrcM;
 	input wire RegWriteM;
 	input wire MemtoRegM;

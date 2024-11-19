@@ -1,6 +1,4 @@
 module control_unit (
-	clk,
-	reset,
 	Instr,
 	PCSrcD,
 	RegWriteD,
@@ -13,8 +11,6 @@ module control_unit (
 	ImmSrcD,
 	RegSrcD,
 );
-	input wire clk;
-	input wire reset;
 	input wire [27:12] Instr;
 	output wire PCSrcD;
 	output wire RegWriteD;
@@ -41,6 +37,6 @@ module control_unit (
 		.Branch(BranchD),
 		.ALUControl(ALUControlD),
 		.FlagW(FlagWriteD)
-	)
+	);
 	//Solo se coloca el decode por el Instr
 endmodule

@@ -1,120 +1,112 @@
 module controller(
-	clk,
-	reset,
-	Cond,
-	Instr,
-	ALUFlags,
-	RegSrcD,
-	ImmSrcD,
-	ALUSrcE,
-	ALUControlE,
-	PCSrcW,
-	RegWriteW,
-	MemWriteM,
-	MemtoRegW
+    clk,
+    reset,
+    Cond,
+    Instr,
+    ALUFlags,
+    RegSrcD,
+    ImmSrcD,
+    ALUSrcE,
+    ALUControlE,
+    PCSrcW,
+    RegWriteW,
+    MemWriteM,
+    MemtoRegW
 );
-	input wire clk;
-	input wire reset;
-	input wire [31:28] Cond;
-	input wire [27:12] Instr;
-	input wire [3:0] ALUFlags;
-	output wire [1:0] RegSrcD;
-	output wire [1:0] ImmSrcD;
-	output wire ALUSrcE;
-	output wire [1:0] ALUControlE;
-	output wire PCSrcW;
-	output wire RegWriteW;
-	output wire MemWriteM;
-	output wire MemtoRegW;
+    input wire clk;
+    input wire reset;
+    input wire [31:28] Cond;
+    input wire [27:12] Instr;
+    input wire [3:0] ALUFlags;
+    output wire [1:0] RegSrcD;
+    output wire [1:0] ImmSrcD;
+    output wire ALUSrcE;
+    output wire [1:0] ALUControlE;
+    output wire PCSrcW;
+    output wire RegWriteW;
+    output wire MemWriteM;
+    output wire MemtoRegW;
 
-	wire PCSrcD, RegWriteD, MemtoRegD, MemWriteD, BranchD, ALUSrcD;
-	wire [1:0] ALUControlD, FlagWriteD;
-	
-	wire [3:0] Flags, CondE, FlagsE;
-	wire PCSrcE, RegWriteE, MemtoRegE, MemWriteE, BranchE;
-	wire [1:0] FlagWriteE;
+    wire PCSrcD, RegWriteD, MemtoRegD, MemWriteD, BranchD, ALUSrcD;
+    wire [1:0] ALUControlD, FlagWriteD;
+    wire [3:0] Flags, CondE, FlagsE;
+    wire PCSrcE, RegWriteE, MemtoRegE, MemWriteE, BranchE;
+    wire [1:0] FlagWriteE;
+    wire PCSrcM, RegWriteM, MemtoRegM;
+    wire CondExE;
 
-	wire PCSrcM, RegWriteM, MemtoRegM, MemWriteM;
+    control_unit cu(
+        .Instr(Instr),
+        .PCSrcD(PCSrcD),
+        .RegWriteD(RegWriteD),
+        .MemtoRegD(MemtoRegD),
+        .MemWriteD(MemWriteD),
+        .ALUControlD(ALUControlD),
+        .BranchD(BranchD),
+        .ALUSrcD(ALUSrcD),
+        .FlagWriteD(FlagWriteD),
+        .ImmSrcD(ImmSrcD),
+        .RegSrcD(RegSrcD)
+    );
 
-	wire CondExE;
+    flop_de de(
+        .clk(clk),
+        .PCSrcD(PCSrcD),
+        .RegWriteD(RegWriteD),
+        .MemtoRegD(MemtoRegD),
+        .MemWriteD(MemWriteD),
+        .ALUControlD(ALUControlD),
+        .BranchD(BranchD),
+        .ALUSrcD(ALUSrcD),
+        .FlagWriteD(FlagWriteD),
+        .Cond(Cond),
+        .Flags(Flags),
+        .PCSrcE(PCSrcE),
+        .RegWriteE(RegWriteE),
+        .MemtoRegE(MemtoRegE),
+        .MemWriteE(MemWriteE),
+        .ALUControlE(ALUControlE),
+        .BranchE(BranchE),
+        .ALUSrcE(ALUSrcE),
+        .FlagWriteE(FlagWriteE),
+        .CondE(CondE),
+        .FlagsE(FlagsE)
+    );
 
-	wire PCSrcEM, RegWriteEM, MemWriteEM; //Logica fuera del Cond Unit
+    cond_unit cu_cond(
+        .clk(clk),
+        .reset(reset),
+        .FlagWriteE(FlagWriteE),
+        .CondE(CondE),
+        .FlagsE(FlagsE),
+        .ALUFlags(ALUFlags),
+        .Flags(Flags),
+        .CondExE(CondExE)
+    );
 
-	control_unit cu(
-		.clk(clk),
-		.reset(reset),
-		.Instr(Instr),
-		.PCSrcD(PCSrcD),
-		.RegWriteD(RegWriteD),
-		.MemtoRegD(MemtoRegD),
-		.MemWriteD(MemWriteD),
-		.ALUControlD(ALUControlD),
-		.BranchD(BranchD),
-		.ALUSrcD(ALUSrcD),
-		.FlagWriteD(FlagWriteD),
-		.ImmSrcD(ImmSrcD),
-		.RegSrcD(RegSrcD)
-	);
+    flop_em em(
+        .clk(clk),
+        .PCSrcE(PCSrcE),
+        .RegWriteE(RegWriteE),
+        .MemtoRegE(MemtoRegE),
+        .MemWriteE(MemWriteE),
+        .PCSrcM(PCSrcM),
+        .RegWriteM(RegWriteM),
+        .MemtoRegM(MemtoRegM),
+        .MemWriteM(MemWriteM)
+    );
 
-	flop_de de(
-		.clk(clk),
-		.PCSrcD(PCSrcD),
-		.RegWriteD(RegWriteD),
-		.MemtoRegD(MemtoRegD),
-		.MemWriteD(MemWriteD),
-		.ALUControlD(ALUControlD),
-		.BranchD(BranchD),
-		.ALUSrcD(ALUSrcD),
-		.FlagWriteD(FlagWriteD),
-		.Cond(Cond),
-		.Flags(Flags),
-		.PCSrcE(PCSrcE),
-		.RegWriteE(RegWriteE),
-		.MemtoRegE(MemtoRegE),
-		.MemWriteE(MemWriteE),
-		.ALUControlE(ALUControlE),
-		.BranchE(BranchE),
-		.ALUSrcE(ALUSrcE),
-		.FlagWriteE(FlagWriteE),
-		.CondE(CondE),
-		.FlagsE(FlagsE)
-	);
+    flop_mw mw(
+        .clk(clk),
+        .PCSrcM(PCSrcM),
+        .RegWriteM(RegWriteM),
+        .MemtoRegM(MemtoRegM),
+        .PCSrcW(PCSrcW),
+        .RegWriteW(RegWriteW),
+        .MemtoRegW(MemtoRegW)
+    );
 
-	cond_unit cu_cond(
-		.clk(clk),
-		.reset(reset),
-		.FlagWriteE(FlagWriteE),
-		.CondE(CondE),
-		.FlagsE(FlagsE),
-		.ALUFlags(ALUFlags),
-		.Flags(Flags),
-		.CondExE(CondExE)
-	);
-
-	flop_em em(
-		.clk(clk),
-		.PCSrcE(PCSrcE),
-		.RegWriteE(RegWriteE),
-		.MemtoRegE(MemtoRegE),
-		.MemWriteE(MemWriteE),
-		.PCSrcM(PCSrcM),
-		.RegWriteM(RegWriteM),
-		.MemtoRegM(MemtoRegM),
-		.MemWriteM(MemWriteM)
-	);
-
-	flop_mw mw(
-		.clk(clk),
-		.PCSrcM(PCSrcM),
-		.RegWriteM(RegWriteM),
-		.MemtoRegM(MemtoRegM),
-		.PCSrcW(PCSrcW),
-		.RegWriteW(RegWriteW),
-		.MemtoRegW(MemtoRegW)
-	);
-
-	assign RegWriteEM = RegWriteE & CondExE;
-	assign PCSrcEM = (BranchE & CondExe) | (PCSrcE & CondExe);
-	assign MemWriteEM = MemWriteE & CondExE;
-
+    assign RegWriteE = RegWriteE & CondExE;
+    assign PCSrcE = (BranchE & CondExE) | (PCSrcE & CondExE);
+    assign MemWriteE = MemWriteE & CondExE;
 endmodule
