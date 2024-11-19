@@ -27,38 +27,20 @@ module control_unit (
 	output wire [1:0] ImmSrcD;
 	output wire [1:0] RegSrcD;
 
-
-///////////////////////////////////
-FALTA CAMBIAR LA LOGICA
-///////////////////////////////////
-
 	decode dec(
 		.Op(Instr[27:26]),
 		.Funct(Instr[25:20]),
 		.Rd(Instr[15:12]),
-		.FlagW(FlagW),
-		.PCS(PCS),
-		.RegW(RegW),
-		.MemW(MemW),
-		.MemtoReg(MemtoReg),
-		.ALUSrc(ALUSrc),
-		.ImmSrc(ImmSrc),
-		.RegSrc(RegSrc),
-		.ALUControl(ALUControl),
-		.byte(byte)
-	);
-	//Se agrega el output para byte
-	condlogic cl(
-		.clk(clk),
-		.reset(reset),
-		.Cond(Instr[31:28]),
-		.ALUFlags(ALUFlags),
-		.FlagW(FlagW),
-		.PCS(PCS),
-		.RegW(RegW),
-		.MemW(MemW),
-		.PCSrc(PCSrc),
-		.RegWrite(RegWrite),
-		.MemWrite(MemWrite)
-	);
+		.PCS(PCSrcD),
+		.MemW(MemWriteD),
+		.MemtoReg(MemtoRegD),
+		.ALUSrc(ALUSrcD),
+		.ImmSrc(ImmSrcD),
+		.RegSrc(RegSrcD),
+		.RegW(RegWriteD),
+		.Branch(BranchD),
+		.ALUControl(ALUControlD),
+		.FlagW(FlagWriteD)
+	)
+	//Solo se coloca el decode por el Instr
 endmodule
